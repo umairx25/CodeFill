@@ -1,3 +1,7 @@
+/**
+ * This file authenticates the user using their gmail, and retrieves the necessary emails from their inbox
+ */
+
 const fs = require('fs').promises;
 const path = require('path');
 const process = require('process');
@@ -89,10 +93,12 @@ function get_email_info(payload, info_type){
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 async function getEmails(auth) {
+  
+  var email_data = [] //contains data of each individual email
   const gmail = google.gmail({version: 'v1', auth});
   const res = await gmail.users.messages.list({
     userId: 'me',
-    maxResults: 3
+    // maxResults: 10
   });
   const emails = res.data.messages;
 
@@ -105,25 +111,31 @@ async function getEmails(auth) {
      });
 
     const payload = msg.data.payload;
-    const parts = msg.data.payload.parts;
-    // const parts = payload.parts || [];
+    const parts = payload.parts || [];
 
     const from_email = get_email_info(payload, "From")
     const to_email = get_email_info(payload, "To")
     const time = get_email_info(payload, "Date")
-    console.log(`From: ${from_email}\nInbox: ${to_email}\nTime: ${time}\n`)
+    const subject = get_email_info(payload, "Subject")
 
     for (part of parts){
         if (part.mimeType === 'text/plain'){
             plainData = part.body.data
             const buffer = Buffer.from(plainData, 'base64');
-            const decoded = quotedPrintable.decode(buffer.toString('utf-8'));
-            console.log("Email body:\n",decoded);
-            console.log("-------------------------------------------------------------------------------\n")
+            const email_body = quotedPrintable.decode(buffer.toString('utf-8'));
+            const curr_email_info = {"From": from_email, "To": to_email, "Time": time, "Subject": subject, "Body": email_body}
+            email_data.push(curr_email_info)
         }
     }
 
    }
+
+   return email_data
 }
 
 authorize().then(getEmails).catch(console.error);
+
+module.exports = {
+  authorize,
+  getEmails
+};
