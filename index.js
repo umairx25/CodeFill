@@ -8,6 +8,7 @@ const process = require('process');
 const {authenticate} = require('@google-cloud/local-auth');
 const {google} = require('googleapis');
 const quotedPrintable = require('quoted-printable');
+const emails = []
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
@@ -63,6 +64,7 @@ async function authorize() {
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
+    port: 3001,
   });
   if (client.credentials) {
     await saveCredentials(client);
@@ -79,11 +81,17 @@ async function authorize() {
  * @param payload Contains the payload information obtained from the http response
  */
 
-function get_email_info(payload, info_type){
-    const data = payload.headers.find(h => h.name === info_type).value;
+// function get_email_info(payload, info_type){
+//     const data = payload.headers.find(h => h.name === info_type).value;
 
-    return data
+//     return data
+// }
+
+function get_email_info(payload, info_type) {
+  const header = payload.headers.find(h => h.name === info_type);
+  return header ? header.value : '';
 }
+
 
 
 
@@ -101,6 +109,7 @@ async function getEmails(auth) {
     // maxResults: 10
   });
   const emails = res.data.messages;
+  // console.log(emails)
 
   for (const email of emails) {
     // Use msg to find other relevant info and structures
@@ -133,7 +142,30 @@ async function getEmails(auth) {
    return email_data
 }
 
-authorize().then(getEmails).catch(console.error);
+// console.log(authorize().then(getEmails).catch(console.error));
+// authorize()
+//   .then(getEmails)
+//   .then((emails) => {
+//     // console.log("Fetched Emails:");
+//     // console.log(JSON.stringify(emails, null, 2));
+//   })
+//   .catch((err) => {
+//     // console.error("Error fetching emails:", err);
+//   });
+// (async () => {
+//   try {
+//     const auth = await authorize();
+//     const emails = await getEmails(auth);
+    
+//     console.log("Fetched Emails:");
+//     console.log(JSON.stringify(emails, null, 2));
+
+//     // You can now use the 'emails' variable here
+//   } catch (err) {
+//     console.error("Error fetching emails:", err);
+//   }
+// })();
+
 
 module.exports = {
   authorize,

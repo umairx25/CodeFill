@@ -1,6 +1,7 @@
 const { authorize, getEmails } = require('./index');
 
 async function getCode() {
+    var all_codes = []
     try {
         const auth = await authorize();
         const emails = await getEmails(auth);
@@ -12,38 +13,40 @@ async function getCode() {
 
             if (verif_codes !== null && check_subject(email.Subject)){
                 verif_codes = removeURL(email, verif_codes)
-                console.log(`Verification code is : ${verif_codes[0]}\nFrom: ${email.From}\nSubject: ${email.Subject}\n`)
+                // console.log(`Verification code is : ${verif_codes[0]}\nFrom: ${email.From}\nSubject: ${email.Subject}\n`)
+                all_codes.push({"From": email.From, "To": email.To, "Time": email.Time, "Subject": email.Subject, "Code": verif_codes[0]})
             }
         }
 
     } catch (error) {
         console.error('Error:', error);
     }
+
+    return all_codes
 };
 
-getCode();
 
 
 //Checks if the subject is relevant to 
 function check_subject(subject) {
     const likelySubjects = ['verify', 'otp', 'code', 'auth', 'security', 'identity'];
     isValidSubject = false;
-
+    
     for (sub of likelySubjects) {
         if (subject.toLowerCase().includes(sub)) {
             isValidSubject = true;
         }
     }
-
+    
     return isValidSubject;
-
+    
 }
 
 //Eliminates codes that could be part of  a url
 function removeURL(email, verif_codes) {
     const invalid_chars = ['=', '/', '?', '.', ':'];
     valid_codes = []
-
+    
     for (code of verif_codes) {
         const index = email.Body.indexOf(code)
         const before = email.Body.charAt[index - 1]
@@ -52,6 +55,11 @@ function removeURL(email, verif_codes) {
             valid_codes.push(code)
         }
     }
-
+    
     return valid_codes
 }
+
+// getCode();
+module.exports = {
+  getCode
+};

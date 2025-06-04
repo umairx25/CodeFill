@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CodeFill</title>
+</head>
+
+<body>
+    <div style="width: 200px; height: 150px; background-color: black;">
+        <h1 style="color: white;">CodeFill</h1>
+
+        <p id="textarea" style="color: white;">No codes to display</p>
+        <button id="btn" type="button">Refresh</button>
+    </div>
+
+    <script>
+        document.getElementById("btn").addEventListener("click", async (e) => {
+            e.preventDefault();
+            console.log("Button clicked");
+            const url = "http://localhost:3001/get-code";
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+
+                // Update the page (this is the key part!)
+                document.getElementById("textarea").innerText = `Code: ${data.code}`;
+            } catch (error) {
+                document.getElementById("textarea").innerText = 'Error fetching code';
+                console.log("fetch error:", error);
+            }
+        });
+    </script>
+</body>
+
+</html>
