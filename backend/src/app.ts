@@ -34,3 +34,8 @@ app.get("/get-code", async (req, res) => {
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+
+//fetch("https://localhost/get-code")
+// -> Hello world  {"a": auhiqwei}
+// var name = the return of api call.name

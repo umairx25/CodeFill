@@ -28,8 +28,8 @@ const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = path.join(process.cwd(), "token.json");
-const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
+const TOKEN_PATH = path.join(process.cwd(), "../token.json");
+const CREDENTIALS_PATH = path.join(process.cwd(), "../credentials.json");
 
 /**
  * Reads previously authorized credentials from the save file.
@@ -114,7 +114,7 @@ async function getEmails(auth: any): Promise<Email[]> {
 
   const res = await gmail.users.messages.list({
     userId: "me",
-    // maxResults: 10
+    maxResults: 10
   });
 
   const emails = res.data.messages;
@@ -173,6 +173,10 @@ async function getEmails(auth: any): Promise<Email[]> {
   return email_data;
 }
 
+function signOut(){
+    fs.unlink("../token.json");
+}
+
 // (async () => {
 //   try {
 //     const auth = await authorize();
@@ -183,8 +187,10 @@ async function getEmails(auth: any): Promise<Email[]> {
 
 //     // You can now use the 'emails' variable here
 //   } catch (err) {
-//     console.error("Error fetching emails:", err);
+//     console.error("Error fetching emails:", err);-
 //   }
 // })();
 
-export { Email, authorize, getEmails };
+export { Email, authorize, getEmails, signOut };
+
+// signOut()

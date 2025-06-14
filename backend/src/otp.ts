@@ -4,7 +4,7 @@
  */
 
 
-import { Email, authorize, getEmails } from "./index";
+import { Email, authorize, getEmails, signOut } from "./index";
 
 
 /**
@@ -12,11 +12,11 @@ import { Email, authorize, getEmails } from "./index";
  * valid verification code. It also performs checks on other aspects of the email,
  * such as the subject, to determine whether the email is relevant
  */
-async function getCode() {
+async function getCode(emails: Email[]) {
   var all_codes = [];
   try {
-    const auth = await authorize();
-    const emails = await getEmails(auth);  //TODO: dont call this all the time
+    // const auth = await authorize();
+    // const emails = await getEmails(auth);  //TODO: dont call this all the time
 
     for (const email of emails) {
       const regex = /\b[A-Z0-9]{5,15}\b/g;
@@ -43,6 +43,7 @@ async function getCode() {
   return all_codes;
 }
 
+
 /**
  * This function checks whether the email subject contains one of the given
  * keywords, ensuring irrelevant emails are not scanned for verification codes
@@ -55,6 +56,7 @@ function check_subject(subject: string) {
     "auth",
     "security",
     "identity",
+    "verification"
   ];
   var isValidSubject: boolean = false;
 
@@ -89,6 +91,17 @@ function removeURL(email: Email, verif_codes: RegExpMatchArray) {
   return valid_codes;
 }
 
+async function main(){
+  const auth = await authorize();
+  const emails = await getEmails(auth);
+  const codes = await getCode(emails);
+
+  // console.log(`All emails: ${emails}`);
+  console.log(JSON.stringify(emails, null, 2));
+  console.log(`Codes retrieved: ${codes[0].Body}`)
+}
+
 export { getCode };
 
-getCode()
+
+main()
