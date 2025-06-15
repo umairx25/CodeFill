@@ -3,7 +3,7 @@
     <header class="popup-header">
       <h1 class="logo">CodeFill</h1>
       <div class="icons">
-        <button class="icon-button" title="History">
+        <button class="icon-button" @click="fetchCode" title="History">
           <i class="fas fa-clock"></i>
         </button>
         <button class="icon-button" title="Account">
@@ -14,11 +14,11 @@
 
     <div class="content">
       <div class="meta">
-        <span class="from"> <strong>From: Google</strong></span>
-        <span class="time">1 minute ago</span>
+        <span class="from"> <strong>From: {{ from}}</strong></span>
+        <span class="time">{{ time }}</span>
       </div>
 
-      <div class="code">145986</div>
+      <div class="code">{{code}}</div>
 
       <button class="copy-button" @click="copyCode">
         {{ copied ? 'Copied!' : 'Copy Code' }}
@@ -26,7 +26,7 @@
     </div>
 
     <footer class="popup-footer">
-      <button class="refresh-button" title="Refresh">
+      <button class="refresh-button" @click="fetchCode" title="Refresh">
         <i class="fa-solid fa-arrow-rotate-right"></i> Refresh
       </button>
 
@@ -38,12 +38,33 @@
 import { ref } from 'vue'
 
 const copied = ref(false)
-const code = '145986'
+// const code = '145986'
 
 function copyCode() {
   navigator.clipboard.writeText(code)
   copied.value = true
   setTimeout(() => (copied.value = false), 1500)
+}
+
+const code = ref("N/A");
+const time = ref(" ")
+const from = ref(" ")
+const loading = ref(false);
+const error = ref(null);
+
+async function fetchCode() {
+  try {
+    const res = await fetch("http://localhost:3001/get-code");
+    const data = await res.json();
+    console.log("Fetched codes:", data);
+
+    code.value = data.Code ?? "No verification code found";
+    time.value = data.Time ?? " ";
+    from.value = data.From.split("<")[0].trim() ?? " ";
+  } catch (err) {
+    console.error("Error fetching:", err);
+    code.value = "Error fetching code";
+  }
 }
 </script>
 

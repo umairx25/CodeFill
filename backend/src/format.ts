@@ -1,10 +1,10 @@
 /**
- * This file contains the logic for extracting verification codes, given a 
- * list of user's email information
+ * This file contains the logic for extracting verification codes, and formatting results
+ * for the express server
  */
 
 
-import { Email, authorize, getEmails, signOut } from "./index";
+import { Email, authorize, getEmails, signOut, DayDate } from "./main";
 
 
 /**
@@ -20,6 +20,8 @@ async function getCode(emails: Email[]) {
 
     for (const email of emails) {
       const regex = /\b[A-Z0-9]{5,15}\b/g;
+      const formattedTime = formatDates(getTimeDifference(email.Time));
+      email.Time = formattedTime
 
       var verif_codes = email.Body.match(regex);
 
@@ -91,6 +93,37 @@ function removeURL(email: Email, verif_codes: RegExpMatchArray) {
   return valid_codes;
 }
 
+function getTimeDifference(dateStr: string): DayDate {
+    const then = new Date(dateStr).getTime(); // parsed safely
+    const now = Date.now();
+    let diffMs = now - then;
+
+    if (diffMs < 0) diffMs = 0;  // Clamp future timestamps to "now"
+
+    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+    const days = Math.floor(totalMinutes / (60 * 24));
+    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+    const minutes = totalMinutes % 60;
+
+    return { days, hours, minutes };
+}
+
+function formatDates(time: DayDate) : string {
+    if (time.days >= 1) {
+        console.log(`${time.days} day(s) ago`);
+        return `${time.days} day(s) ago`
+    } else if (time.hours >= 1) {
+        console.log(`${time.hours} hour(s) ago`);
+        return `${time.hours} hour(s) ago`
+    } else if (time.minutes >= 1) {
+        console.log(`${time.minutes} minute(s) ago`);
+        return `${time.minutes} minute(s) ago`
+    } else {
+        console.log("now");
+        return "now"
+    }
+}
+
 async function main(){
   const auth = await authorize();
   const emails = await getEmails(auth);
@@ -99,9 +132,12 @@ async function main(){
   // console.log(`All emails: ${emails}`);
   console.log(JSON.stringify(emails, null, 2));
   console.log(`Codes retrieved: ${codes[0].Body}`)
+  // Example usage with real email header time
+  // const emailTime = "Fri, 13 Jun 2025 13:19:43 +0000"
+  // const result = getTimeDifference(emailTime);
+  // formatDates(result);
 }
 
+// main()
 export { getCode };
 
-
-main()

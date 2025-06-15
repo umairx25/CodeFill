@@ -15,6 +15,25 @@
       "48": "icon.png",
       "128": "icon.png"
     }
-  }
+  },
+  "permissions": [
+    "clipboardWrite",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "http://localhost:3001/"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["*.js", "*.css", "*.woff2", "*.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
 

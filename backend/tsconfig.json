@@ -9,6 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "extension", "extension/script.js", "src/app.ts", "backend/index.ts", "src/otp.ts", "extension"],
+  "include": ["src/**/*", "extension", "extension/script.js", "src/app.ts", "backend/index.ts", "src/format.ts", "extension"],
   "exclude": ["node_modules"]
 }
