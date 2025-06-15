@@ -130,14 +130,14 @@ async function main(){
   const codes = await getCode(emails);
 
   // console.log(`All emails: ${emails}`);
-  console.log(JSON.stringify(emails, null, 2));
-  console.log(`Codes retrieved: ${codes[0].Body}`)
+  // console.log(JSON.stringify(emails, null, 2));
+  // console.log(`Codes retrieved: ${codes[0].Body}`)
   // Example usage with real email header time
   // const emailTime = "Fri, 13 Jun 2025 13:19:43 +0000"
   // const result = getTimeDifference(emailTime);
   // formatDates(result);
 }
 
-// main()
+main()
 export { getCode };
 

@@ -15,6 +15,7 @@
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.29",
     "@types/quoted-printable": "^1.0.2",
+    "@vue/tsconfig": "^0.7.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
