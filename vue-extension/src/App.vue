@@ -26,27 +26,30 @@
     </div>
 
     <footer class="popup-footer">
-      <button class="refresh-button" @click="fetchCode" title="Refresh">
-        <i class="fa-solid fa-arrow-rotate-right"></i> Refresh
+      <div class = "icons">
+        <button class="refresh-button" @click="fetchCode" title="Refresh">
+          Refresh
       </button>
+      </div>
 
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted} from 'vue'
 
 const copied = ref(false)
 // const code = '145986'
 
 function copyCode() {
-  navigator.clipboard.writeText(code)
-  copied.value = true
-  setTimeout(() => (copied.value = false), 1500)
+  navigator.clipboard.writeText(code.value);   // ← use .value
+  copied.value = true;
+  setTimeout(() => (copied.value = false), 1500);
 }
 
-const code = ref("N/A");
+
+const code = ref("Loading...");
 const time = ref(" ")
 const from = ref(" ")
 const loading = ref(false);
@@ -61,11 +64,14 @@ async function fetchCode() {
     code.value = data.Code ?? "No verification code found";
     time.value = data.Time ?? " ";
     from.value = data.From.split("<")[0].trim() ?? " ";
+    copyCode();
   } catch (err) {
     console.error("Error fetching:", err);
     code.value = "Error fetching code";
   }
 }
+
+onMounted(fetchCode);
 </script>
 
 <style scoped>
