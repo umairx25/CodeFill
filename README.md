@@ -1,3 +1,4 @@
+
 # CodeFill
 
 **CodeFill** is a one-click Chrome extension that fetches and auto-copies verification codes (like OTPs, 2FA codes, login tokens) directly from your **Gmail inbox**. No tab switching, no email hunting — just click, copy, done.
@@ -11,6 +12,7 @@
 ## 📦 [→ Chrome Web Store (mock)](https://chrome.google.com/webstore/detail/codefill/your-extension-id-here)
 
 ---
+
 
 ## ⚙️ How It Works
 
@@ -65,6 +67,7 @@ If you experience issues (e.g., code not showing or login failing):
 - 👥 **Support for multiple email accounts**  
 
 ---
+
 
 ## 🧪 Development Setup
 
