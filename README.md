@@ -1,94 +1,100 @@
-# CodeFill 📨🔑
 
-_A Chrome Extension to Automatically Fetch and Display Verification Codes from Your Emails_
+# CodeFill
 
----
+**CodeFill** is a one-click Chrome extension that fetches and auto-copies verification codes (like OTPs, 2FA codes, login tokens) directly from your **Gmail inbox**. No tab switching, no email hunting — just click, copy, done.
 
-## 📌 Overview
-
-**CodeFill** is a lightweight, privacy-friendly, open-source Chrome extension that connects to your email accounts (Gmail, Outlook, more coming soon) and instantly fetches verification codes sent to your inbox — then displays them in a clean, dismissible popup UI. Ideal for 2FA, account logins, and any flow that sends a verification code via email.
-
----
-
-## ✅ Features
-
-- 🔐 **OAuth-based secure login** for Gmail & Outlook
-- 📬 **Real-time scanning** of inbox for verification code emails
-- 🔍 **Regex-based parsing** to extract codes (e.g., 4–8 digit sequences)
-- 📤 **Popup notification** when a code is found (not background clipboard overwrite)
-- 🧠 **Popup UI** includes:
-  - Account source (e.g., Gmail/Outlook)
-  - Email address
-  - The extracted code
-  - Copy button (`📋`) and close (`❌`) option
-- 🧩 **Supports multiple accounts** (switch between multiple connected Gmail/Outlook accounts)
-- ⚙️ **Lightweight polling** (efficient checking without background drains)
-- 🚀 **Future-ready**: Yahoo, Apple Mail (IMAP) support planned
-- 🆓 **Completely free** and **open-source** under the MIT License
+⏱️ **Saves ~6–7 seconds per login** by eliminating inbox digging  
+🔒 **Runs only on click** — no background scanning or polling  
+🧩 Built with **Vue 3** (popup UI) and **Node.js/Express** backend (Gmail OAuth + email parsing)
 
 ---
 
-## 🧱 Tech Stack
-
-- Chrome Extensions (Manifest V3)
-- JavaScript (ES6+), HTML, CSS
-- Gmail API (OAuth 2.0)
-- Microsoft Graph API (OAuth 2.0)
-- Regex for code extraction
-- Chrome Identity, Alarms, Notifications, Storage APIs
+## 📦 [→ Chrome Web Store (mock)](https://chrome.google.com/webstore/detail/codefill/your-extension-id-here)
 
 ---
 
-## 🛣️ Project Roadmap & Checkpoints
 
-### ✅ Phase 1: Base Setup
+## ⚙️ How It Works
 
-- [x] Initialize Chrome Extension structure (manifest, popup, background)
-- [x] Setup OAuth2 for Gmail using Chrome Identity API
-- [x] Create basic popup UI
-
-### ✅ Phase 2: Gmail Integration
-
-- [x] Fetch emails from Gmail using API
-- [x] Parse verification codes using regex
-- [x] Display popup with code and copy button
-
-### ✅ Phase 3: Outlook Integration
-
-- [x] Microsoft OAuth2 setup via Microsoft Graph
-- [x] Fetch emails from Outlook inbox
-- [x] Parse and display codes similarly to Gmail
-
-### 🔄 Phase 4: Account Handling
-
-- [ ] Support multiple email accounts
-- [ ] Display account info in popups
-- [ ] Store tokens securely via chrome.storage
-
-### 🔄 Phase 5: Optimization
-
-- [ ] Efficient polling with `chrome.alarms`
-- [ ] Debounce duplicate emails and prevent repeat notifications
-- [ ] Optionally notify only on user interaction
-
-### 🔄 Phase 6: Future Support (IMAP & More)
-
-- [ ] Yahoo integration (via IMAP)
-- [ ] Apple Mail/iCloud IMAP support
-- [ ] Optional server-side push/webhook setup
+1. Click the CodeFill icon in your browser toolbar  
+2. On first use, you'll be prompted to sign in with your Gmail account (OAuth 2.0)  
+3. After login, clicking the icon will:
+   - Trigger the backend to fetch your 5 most recent messages via the **Gmail API**
+   - Parse email subjects + HTML bodies using pattern-matched code extractors (regex-based, customizable)
+   - Display the most recent code in a popup
+   - Auto-copy the code to your clipboard
+   - Update the button text to “Copied!” (then back)
 
 ---
 
-## 🚀 Getting Started (Dev Setup)
+## 🧠 Tech Stack
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/yourusername/codefill.git
-   ```
-2. Go to Chrome > Extensions > Load unpacked
+| Component      | Tech Used                          |
+|----------------|------------------------------------|
+| Frontend       | `Vue 3 + Vite` (popup UI)  
+| Backend        | `Express.js` w/ OAuth 2.0 flow  
+| Email API      | `Google Gmail API` (`messages.list`, `messages.get`)  
+| Auth Flow      | Secure OAuth redirect w/ refresh token handling  
+| Clipboard      | Native `navigator.clipboard.writeText()`  
+| Storage        | `chrome.storage.local` for token caching  
 
-3. Load the codefill/ directory
+---
 
-4. Set up OAuth credentials for Gmail and Outlook
+## 🔐 Privacy & Security
 
-5. Start hacking!
+CodeFill is designed with privacy-first architecture:
+
+- ✅ No background listeners — **runs only when clicked**
+- ✅ No third-party libraries for tracking or analytics
+- ✅ All email parsing happens **on the backend**, token-scoped per user
+- ✅ You can revoke access anytime at [Google Account Permissions](https://myaccount.google.com/permissions)
+
+---
+
+## ❗ Troubleshooting
+
+If you experience issues (e.g., code not showing or login failing):
+
+1. Visit [Google Account Permissions](https://myaccount.google.com/permissions)
+2. Revoke access for **CodeFill**
+3. Click the extension icon again to reauthorize your Gmail account
+
+---
+
+## 🚧 Coming Soon
+
+- 📨 **Outlook inbox support** (via Microsoft Graph API)  
+- 👥 **Support for multiple email accounts**  
+
+---
+
+
+## 🧪 Development Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/codefill.git
+
+# Install dependencies
+cd vue-extension
+npm install
+
+# Run dev server for extension
+npm run dev
+
+# Test out on your browser (any Chromium browser is supported)
+npm run build # to build the extension
+
+#Go to chrome://extensions -> load unpacked -> vue-extension/dist
+
+# Running the Backend (optional, if running locally)
+cd backend/src
+npm install
+npx ts-node app.ts
+```
+
+---
+
+## 💬 Feedback or Questions?
+
+Open an issue or message me on [LinkedIn](https://linkedin.com/in/yourname) — happy to help.
