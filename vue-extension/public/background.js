@@ -1,4 +1,5 @@
-chrome.action.onClicked.addListener(function(tab) {
-  // Add your desired behavior here
-  console.log("Extension icon clicked!");
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "log") {
+    console.log("🛠 [From Popup]:", message.payload);
+  }
 });

@@ -10,9 +10,15 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  build: {
+    sourcemap: true, // <-- Add this
+    minify: false,   // <-- And this
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
 })
+
+// vite.config.ts
