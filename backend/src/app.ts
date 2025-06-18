@@ -6,11 +6,16 @@
 import express from "express";
 import cors from "cors";
 import { getCode } from "./format";
-import { authorize, getEmails } from "./main";
+import { authorize, getEmails, Token } from "./main";
 
 
 const app = express();  // Creates the app
-app.use(cors());        // Allows cors policy
+app.use(cors({
+  origin: '*', // or '*' for all origins
+  methods: ['*'],
+  allowedHeaders: ['*'], 
+}));
+app.use(express.json())
 const port = 3001;
 
 /**
@@ -20,17 +25,6 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-/**
- * The path calls the getCode function, fetching the user's list
- * of recent emails and returning the most recent email's information
- */
-app.get("/signin", async (req, res) => {
-  const auth = await authorize();
-  const emails = await getEmails(auth);
-
-  // res.send(codes)
-
-});
 
 
 /**
@@ -38,17 +32,23 @@ app.get("/signin", async (req, res) => {
  * of recent emails and returning the most recent email's information
  */
 app.get("/get-code", async (req, res) => {
-  const auth = await authorize();
-  const emails = await getEmails(auth);
-  const codes = await getCode(emails);
+  const token = req.headers['token']
+  console.log("[In app.ts] Received headers from frontend with value", req.headers)
+  console.log("[In app.ts] Received token from frontend with value", token)
+  const auth = await authorize(token);
+  // console.log("[In app.ts] Received auth, with authentication: ", auth[0])
+  console.log("[In app.ts] Received auth, with new token: ", auth[1])
+  const emails = await getEmails(auth[0]);
+  var codes = await getCode(emails);
+  codes[0].Token = auth[1];
+  console.log("[In app.ts] Codes[0] is: ", codes[0])
 
-  res.json(codes[0])
+  res.json(codes[0]) //
+  res.sendStatus(200);
 
 });
 
-// app.post()
 
-//Print statement for dev
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

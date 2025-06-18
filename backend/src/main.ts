@@ -12,48 +12,59 @@ import quotedPrintable from "quoted-printable";
 import { error } from "console";
 import { JSONClient } from "google-auth-library/build/src/auth/googleauth";
 
-interface Email {
+export interface Email {
   From: string;
   To: string;
   Time: string;
   Subject: string;
   Body: string;
   Code?: string;
+  Token?: any; //new
 }
 
-interface DayDate {
-    days: number;
-    hours: number;
-    minutes: number;
+export interface DayDate {
+  days: number;
+  hours: number;
+  minutes: number;
 }
+
+export interface Token {
+  type: any;
+  client_id: any;
+  client_secret: any;
+  refresh_token?: any;
+};
 
 const emails: Array<Email> = [];
+
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-// const TOKEN_PATH = path.join(process.cwd(), "token.json");
-const TOKEN_PATH = "token.json";
-const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
+// const TOKEN_PATH = "token.json";
+export const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
 
 /**
  * Reads previously authorized credentials from the save file.
  *
  * @return {Promise<OAuth2Client|null>}
  */
-async function loadSavedCredentialsIfExist() {
+async function loadSavedCredentialsIfExist(content: string) {
   try {
-    const content = await fs.readFile(TOKEN_PATH, "utf8");
-    console.log(content);
-    const credentials = JSON.parse(String(content));
-    return google.auth.fromJSON(credentials);
+    // const content = await fs.readFile(TOKEN_PATH, "utf8");
+    console.log("[main.ts] Received content @loadsavedcred: ",content);
+    const token = JSON.parse(content);
+    console.log("Final return value is: ", google.auth.fromJSON(token));
+    return google.auth.fromJSON(token);
   } catch (err) {
+    console.log("Error at loadSavedCred (main.ts)")
     console.log(err);
     return null;
   }
 }
+
 
 /**
  * Serializes credentials to a file compatible with GoogleAuth.fromJSON.
@@ -61,43 +72,99 @@ async function loadSavedCredentialsIfExist() {
  * @param {OAuth2Client} client
  * @return {Promise<void>}
  */
+// async function saveCredentials(client: OAuth2Client) {
+//   const content = await fs.readFile(CREDENTIALS_PATH);
+//   const keys = JSON.parse(String(content));
+//   const key = keys.installed || keys.web;
+//   const payload = JSON.stringify({
+//     type: "authorized_user",
+//     client_id: key.client_id,
+//     client_secret: key.client_secret,
+//     refresh_token: client.credentials.refresh_token,
+//   });
+
+//   return payload;
+
+//   // await fs.writeFile(TOKEN_PATH, payload);
+// }
+
 async function saveCredentials(client: OAuth2Client) {
   const content = await fs.readFile(CREDENTIALS_PATH);
   const keys = JSON.parse(String(content));
   const key = keys.installed || keys.web;
+
   const payload = JSON.stringify({
     type: "authorized_user",
     client_id: key.client_id,
     client_secret: key.client_secret,
     refresh_token: client.credentials.refresh_token,
   });
-  await fs.writeFile(TOKEN_PATH, payload);
+
+  // content.type = "authorized_user"
+  // content.client_id= key.client_id,
+  // content.client_secret= key.client_secret,
+  // content.refresh_token= client.credentials.refresh_token
+
+  // const payload = JSON.stringify({
+  //   type: "authorized_user",
+  //   client_id: key.client_id,
+  //   client_secret: key.client_secret,
+  //   refresh_token: client.credentials.refresh_token,
+  // });
+
+  return payload;
+
+  // await fs.writeFile(TOKEN_PATH, payload);
 }
+
 
 /**
  * Load or request or authorization to call APIs.
  *
  */
-async function authorize(): Promise<JSONClient | OAuth2Client> {
-  let client = await loadSavedCredentialsIfExist();
-  console.log(client);
+export async function authorize(content: any): Promise<any> {
+  let client = await loadSavedCredentialsIfExist(content);
+  console.log("[main.ts] Value of client in authorize is: ", client)
 
   if (client) {
-    // console.log("Client exists");
-    return client;
+    console.log("Client exists at authorize, client's value is: ", client);
+    return [client, JSON.stringify(content)];
   }
-  // console.log("Client not exist");
+
   var client1 = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
     // port: 3001,
   });
+  var token;
   if (client1.credentials) {
-    await saveCredentials(client1);
+    token = await saveCredentials(client1);
+    // console.log("Client1 created, with value:", client1);
+    // console.log("Client1 created, token saved with value:", token);
   }
 
-  return client1;
+  return [client1, token];
 }
+
+// export async function authorize(content: any): Promise<[any, string]> {
+//   const existing = await loadSavedCredentialsIfExist(content);
+
+//   console.log("Existing Token is (main.ts)", existing)
+//   if (existing) {
+//     return [existing, content]; // token already exists
+//   }
+
+//   const client = await authenticate({
+//     scopes: SCOPES,
+//     keyfilePath: path.join(process.cwd(), "credentials.json"), // optional if already handled elsewhere
+//   });
+
+//   const token = await saveCredentials(content, client);
+
+//   return [client, JSON.stringify(token)];
+// }
+
+
 
 /**
  * Gets the email's information.
@@ -107,8 +174,8 @@ async function authorize(): Promise<JSONClient | OAuth2Client> {
  * @param payload Contains the payload information obtained from the http response
  */
 
-function get_email_info( payload: gmail_v1.Schema$MessagePartHeader[],info_type: string,) {
-  
+function get_email_info(payload: gmail_v1.Schema$MessagePartHeader[], info_type: string,) {
+
   const header = payload.find((h) => h.name === info_type);
   return header?.value || "";
 }
@@ -119,7 +186,7 @@ function get_email_info( payload: gmail_v1.Schema$MessagePartHeader[],info_type:
  * and returns key info such as the subject, sender, receiver, body, and subject as an Email 
  * interface object.
  */
-async function getEmails(auth: any): Promise<Email[]> {
+export async function getEmails(auth: any): Promise<Email[]> {
   const email_data: Email[] = [];
   const gmail = google.gmail({ version: "v1", auth });
 
@@ -184,8 +251,6 @@ async function getEmails(auth: any): Promise<Email[]> {
   return email_data;
 }
 
-function signOut(){
-    fs.unlink("token.json");
+export function signOut() {
+  fs.unlink("token.json");
 }
-
-export { Email, authorize, getEmails, signOut, DayDate };

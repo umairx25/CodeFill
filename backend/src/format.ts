@@ -12,7 +12,7 @@ import { Email, authorize, getEmails, signOut, DayDate } from "./main";
  * valid verification code. It also performs checks on other aspects of the email,
  * such as the subject, to determine whether the email is relevant
  */
-async function getCode(emails: Email[]) {
+export async function getCode(emails: Email[]) {
   var all_codes = [];
   try {
     // const auth = await authorize();
@@ -38,7 +38,7 @@ async function getCode(emails: Email[]) {
       }
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in getEmails [format.ts]");
   }
 
   // console.log(all_codes)
@@ -110,34 +110,33 @@ function getTimeDifference(dateStr: string): DayDate {
 
 function formatDates(time: DayDate) : string {
     if (time.days >= 1) {
-        console.log(`${time.days} day(s) ago`);
+        // console.log(`${time.days} day(s) ago`);
         return `${time.days} day(s) ago`
     } else if (time.hours >= 1) {
-        console.log(`${time.hours} hour(s) ago`);
+        // console.log(`${time.hours} hour(s) ago`);
         return `${time.hours} hour(s) ago`
     } else if (time.minutes >= 1) {
-        console.log(`${time.minutes} minute(s) ago`);
+        // console.log(`${time.minutes} minute(s) ago`);
         return `${time.minutes} minute(s) ago`
     } else {
-        console.log("now");
+        // console.log("now");
         return "now"
     }
 }
 
-async function main(){
-  const auth = await authorize();
-  const emails = await getEmails(auth);
-  const codes = await getCode(emails);
+// async function main(){
+//   const auth = await authorize();
+//   const emails = await getEmails(auth);
+//   const codes = await getCode(emails);
 
-  // console.log(`All emails: ${emails}`);
-  // console.log(JSON.stringify(emails, null, 2));
-  // console.log(`Codes retrieved: ${codes[0].Body}`)
-  // Example usage with real email header time
-  // const emailTime = "Fri, 13 Jun 2025 13:19:43 +0000"
-  // const result = getTimeDifference(emailTime);
-  // formatDates(result);
-}
+//   // console.log(`All emails: ${emails}`);
+//   // console.log(JSON.stringify(emails, null, 2));
+//   // console.log(`Codes retrieved: ${codes[0].Body}`)
+//   // Example usage with real email header time
+//   // const emailTime = "Fri, 13 Jun 2025 13:19:43 +0000"
+//   // const result = getTimeDifference(emailTime);
+//   // formatDates(result);
+// }
 
-main()
-export { getCode };
+// main()
 
