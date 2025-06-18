@@ -3,7 +3,7 @@
     <header class="popup-header">
       <h1 class="logo">CodeFill</h1>
       <div class="icons">
-        <button class="icon-button" @click="fetchCode" title="History">
+        <button class="icon-button" @click="saveEmail('sameer@yahoo.com')" title="History">
           <i class="fas fa-clock"></i>
         </button>
         <button class="icon-button" title="Account">
@@ -14,11 +14,11 @@
 
     <div class="content">
       <div class="meta">
-        <span class="from"> <strong>From: {{ from}}</strong></span>
+        <span class="from"> <strong>From: {{ from }}</strong></span>
         <span class="time">{{ time }}</span>
       </div>
 
-      <div class="code">{{code}}</div>
+      <div class="code">{{ code }}</div>
 
       <button class="copy-button" @click="copyCode">
         {{ copied ? 'Copied!' : 'Copy Code' }}
@@ -26,10 +26,10 @@
     </div>
 
     <footer class="popup-footer">
-      <div class = "icons">
-        <button class="refresh-button" @click="fetchCode" title="Refresh">
+      <div class="icons">
+        <button class="refresh-button" @click="fetchCode()" title="Refresh">
           Refresh
-      </button>
+        </button>
       </div>
 
     </footer>
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 
 const copied = ref(false)
 // const code = '145986'
@@ -57,11 +57,19 @@ const error = ref(null);
 
 async function fetchCode() {
   try {
-    const res = await fetch("http://localhost:3001/get-code");
-    const data = await res.json();
-    console.log("Fetched codes:", data);
 
-    code.value = data.Code ?? "No verification code found";
+    var token = await getToken()
+
+    const res = await fetch("http://localhost:3001/oauth2callback", {
+      headers: {
+        'token': JSON.stringify(token)
+      }
+    });
+
+    const data = await res.json();
+    code.value = String(data)
+    setToken(data.Token)
+    // code.value = data.Code ?? "No verification code found";
     time.value = data.Time ?? " ";
     from.value = data.From.split("<")[0].trim() ?? " ";
     copyCode();
@@ -71,7 +79,38 @@ async function fetchCode() {
   }
 }
 
-onMounted(fetchCode);
+
+/** Save the address */
+async function setToken(token) {
+  console.warn("setToken has been called with token value of: ", token)
+  await chrome.storage.local.set({ ["token"]: token });
+}
+
+
+/** Fetch it later (undefined if never stored) */
+async function getToken() {
+  const obj = await chrome.storage.local.get("token");
+
+  if (!obj["token"]) {
+    // maybe fetch or construct a new token here
+    console.warn("Token not found: ", obj["token"])
+    return;
+  }
+
+  console.warn("Token retrieved: ", obj["token"])
+
+  return obj["token"];
+}
+
+// function logToBackground(msg) {
+//   chrome.runtime.sendMessage({ type: "log", payload: msg });
+// }
+
+
+
+onMounted(() => {
+  // console.log("Clicked")
+});
 </script>
 
 <style scoped>
