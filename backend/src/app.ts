@@ -18,9 +18,6 @@ app.use(cors({
 app.use(express.json())
 
 const port = process.env.PORT || 3001;
-app.listen(port, () => {
-  console.log(`✅ Listening on port ${port}`);
-});
 
 /**
  * Default landing page when user is not signed in
@@ -28,7 +25,6 @@ app.listen(port, () => {
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-
 
 
 /**
