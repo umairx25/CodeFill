@@ -4,7 +4,7 @@
  */
 
 
-import { Email, getEmails, DayDate } from "./main";
+import { Email, DayDate } from "./main";
 
 
 /**
@@ -123,20 +123,4 @@ function formatDates(time: DayDate) : string {
         return "now"
     }
 }
-
-// async function main(){
-//   const auth = await authorize();
-//   const emails = await getEmails(auth);
-//   const codes = await getCode(emails);
-
-//   // console.log(`All emails: ${emails}`);
-//   // console.log(JSON.stringify(emails, null, 2));
-//   // console.log(`Codes retrieved: ${codes[0].Body}`)
-//   // Example usage with real email header time
-//   // const emailTime = "Fri, 13 Jun 2025 13:19:43 +0000"
-//   // const result = getTimeDifference(emailTime);
-//   // formatDates(result);
-// }
-
-// main()
 

@@ -1,4 +1,4 @@
-import { google, gmail_v1 } from "googleapis";
+import { google} from "googleapis";
 require('dotenv').config()
 import { OAuth2Client } from "google-auth-library";
 import quotedPrintable from "quoted-printable";
@@ -23,9 +23,9 @@ export interface DayDate {
 }
 
 // Replace with your values from Google Console
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URIS!;
+export const CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+export const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+export const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URIS!;
 
 // OAuth2 client
 const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
@@ -93,5 +93,3 @@ export async function getEmails(auth: OAuth2Client): Promise<Email[]> {
   return emailData;
 }
 
-
-console.log(getAuthUrl())

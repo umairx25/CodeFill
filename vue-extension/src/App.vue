@@ -55,52 +55,108 @@ const from = ref(" ")
 const loading = ref(false);
 const error = ref(null);
 
-async function fetchCode() {
+// Replace this with your real OAuth Client ID
+const GOOGLE_CLIENT_ID = "628428485156-am6gqacvr5p1dm8nmhdioebdr2llid91.apps.googleusercontent.com"
+const EXTENSION_ID = chrome.runtime.id;
+// console.warn(EXTENSION_ID)
+
+async function fetchCode(){
+
+  window.hello.init({
+    google: GOOGLE_CLIENT_ID
+  }, {
+    redirect_uri: `https://${EXTENSION_ID}.chromiumapp.org/`,
+    scope: 'email profile https://www.googleapis.com/auth/gmail.readonly'
+  });
+
+  if(!getToken()){
+    window.hello('google').login({ scope: 'email' });
+  }
+  
   try {
-
     var token = await getToken()
+    console.warn("Token found: ", JSON.stringify(token))
 
-    const res = await fetch("http://localhost:3001/oauth2callback", {
+    const res = await fetch("http://localhost:3001/get-code", {
       headers: {
         'token': JSON.stringify(token)
       }
     });
 
     const data = await res.json();
+    console.warn("After fetch call, found: ", data)
     code.value = String(data)
-    setToken(data.Token)
-    // code.value = data.Code ?? "No verification code found";
+    // setToken(data.Token)
+    code.value = data.Code ?? "No verification code found";
     time.value = data.Time ?? " ";
     from.value = data.From.split("<")[0].trim() ?? " ";
     copyCode();
   } catch (err) {
     console.error("Error fetching:", err);
-    code.value = "Error fetching code";
+    code.value = "Code not Found";
   }
+
 }
 
+// document.addEventListener("DOMContentLoaded", () => {
+//   const loginButton = document.getElementById("login");
+//   if (loginButton) {
+//     loginButton.addEventListener("click", () => {
+//       hello('google').login({ scope: 'email' });
+//     });
+//   }
 
-/** Save the address */
-async function setToken(token) {
-  console.warn("setToken has been called with token value of: ", token)
-  await chrome.storage.local.set({ ["token"]: token });
-}
+//   // Listen for login events
+//   hello.on('auth.login', function(auth) {
+//     // Get profile after login
+//     hello(auth.network).api('me').then(function(user) {
+//       document.getElementById('profile').innerHTML = `
+//         <p>Hello, ${user.name}!</p>
+//         <img src="${user.thumbnail}" alt="Profile picture">
+//       `;
+//     });
+//   });
+// });
+
+// async function fetchCode() {
+//   try {
+
+//     var token = await getToken()
+
+//     const res = await fetch("http://localhost:3001/oauth2callback", {
+//       headers: {
+//         'token': JSON.stringify(token)
+//       }
+//     });
+
+//     const data = await res.json();
+//     code.value = String(data)
+//     setToken(data.Token)
+//     // code.value = data.Code ?? "No verification code found";
+//     time.value = data.Time ?? " ";
+//     from.value = data.From.split("<")[0].trim() ?? " ";
+//     copyCode();
+//   } catch (err) {
+//     console.error("Error fetching:", err);
+//     code.value = "Error fetching code";
+//   }
+// }
 
 
 /** Fetch it later (undefined if never stored) */
 async function getToken() {
-  const obj = await chrome.storage.local.get("token");
+  const obj = await chrome.storage.local.get("hello");
 
-  if (!obj["token"]) {
-    // maybe fetch or construct a new token here
-    console.warn("Token not found: ", obj["token"])
-    return;
+  const googleToken = obj.hello?.google;
+  if (!googleToken || !googleToken.access_token) {
+    console.warn("Token not found or malformed:", googleToken);
+    return null;
   }
 
-  console.warn("Token retrieved: ", obj["token"])
-
-  return obj["token"];
+  console.log("Retrieved token:", googleToken);
+  return googleToken;
 }
+
 
 // function logToBackground(msg) {
 //   chrome.runtime.sendMessage({ type: "log", payload: msg });
@@ -108,9 +164,7 @@ async function getToken() {
 
 
 
-onMounted(() => {
-  // console.log("Clicked")
-});
+onMounted(fetchCode());
 </script>
 
 <style scoped>

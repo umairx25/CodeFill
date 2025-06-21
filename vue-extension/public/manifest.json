@@ -17,9 +17,14 @@
     }
   },
   "permissions": [
-    "clipboardWrite",
-    "storage"
-  ],
+      "clipboardWrite",
+      "identity",
+      "identity.email",
+      "storage",
+      "webRequest",
+      "webNavigation"
+    ],
+    
   "background": {
     "service_worker": "background.js"
   },
