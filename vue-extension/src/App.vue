@@ -3,12 +3,14 @@
     <header class="popup-header">
       <h1 class="logo">CodeFill</h1>
       <div class="icons">
-        <button class="icon-button" @click="saveEmail('sameer@yahoo.com')" title="History">
-          <i class="fas fa-clock"></i>
-        </button>
-        <button class="icon-button" title="Account">
+        <button class="icon-logoutbutton" @click="logOut" title="Logout">
           <i class="fas fa-user-circle"></i>
+          <span class="label">Logout</span>
         </button>
+
+        <!-- <button class="icon-button" title="Account">
+          <i class="fas fa-user-circle"></i>
+        </button> -->
       </div>
     </header>
 
@@ -40,7 +42,6 @@
 import { ref, onMounted } from 'vue'
 
 const copied = ref(false)
-// const code = '145986'
 
 function copyCode() {
   navigator.clipboard.writeText(code.value);   // ← use .value
@@ -60,87 +61,90 @@ const GOOGLE_CLIENT_ID = "628428485156-am6gqacvr5p1dm8nmhdioebdr2llid91.apps.goo
 const EXTENSION_ID = chrome.runtime.id;
 // console.warn(EXTENSION_ID)
 
-async function fetchCode(){
+// async function fetchCode(){
 
-  window.hello.init({
-    google: GOOGLE_CLIENT_ID
-  }, {
-    redirect_uri: `https://${EXTENSION_ID}.chromiumapp.org/`,
-    scope: 'email profile https://www.googleapis.com/auth/gmail.readonly'
-  });
-
-  if(!getToken()){
-    window.hello('google').login({ scope: 'email' });
-  }
-  
-  try {
-    var token = await getToken()
-    console.warn("Token found: ", JSON.stringify(token))
-
-    const res = await fetch("http://localhost:3001/get-code", {
-      headers: {
-        'token': JSON.stringify(token)
-      }
-    });
-
-    const data = await res.json();
-    console.warn("After fetch call, found: ", data)
-    code.value = String(data)
-    // setToken(data.Token)
-    code.value = data.Code ?? "No verification code found";
-    time.value = data.Time ?? " ";
-    from.value = data.From.split("<")[0].trim() ?? " ";
-    copyCode();
-  } catch (err) {
-    console.error("Error fetching:", err);
-    code.value = "Code not Found";
-  }
-
-}
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const loginButton = document.getElementById("login");
-//   if (loginButton) {
-//     loginButton.addEventListener("click", () => {
-//       hello('google').login({ scope: 'email' });
-//     });
-//   }
-
-//   // Listen for login events
-//   hello.on('auth.login', function(auth) {
-//     // Get profile after login
-//     hello(auth.network).api('me').then(function(user) {
-//       document.getElementById('profile').innerHTML = `
-//         <p>Hello, ${user.name}!</p>
-//         <img src="${user.thumbnail}" alt="Profile picture">
-//       `;
-//     });
+//   window.hello.init({
+//     google: GOOGLE_CLIENT_ID
+//   }, {
+//     redirect_uri: `https://${EXTENSION_ID}.chromiumapp.org/`,
+//     scope: 'email profile https://www.googleapis.com/auth/gmail.readonly'
 //   });
-// });
 
-// async function fetchCode() {
+//   // if(!getToken()){
+//     window.hello('google').login({
+//     scope: 'email',
+//     prompt: 'select_account'  // 👈 forces account picker
+//   });
+
+//   // }
+  
 //   try {
-
 //     var token = await getToken()
+//     console.warn("Token found: ", JSON.stringify(token))
 
-//     const res = await fetch("http://localhost:3001/oauth2callback", {
+//     const res = await fetch("http://localhost:3001/get-code", {
 //       headers: {
 //         'token': JSON.stringify(token)
 //       }
 //     });
 
 //     const data = await res.json();
+//     console.warn("After fetch call, found: ", data)
 //     code.value = String(data)
-//     setToken(data.Token)
-//     // code.value = data.Code ?? "No verification code found";
+//     // setToken(data.Token)
+//     code.value = data.Code ?? "No verification code found";
 //     time.value = data.Time ?? " ";
 //     from.value = data.From.split("<")[0].trim() ?? " ";
 //     copyCode();
 //   } catch (err) {
 //     console.error("Error fetching:", err);
-//     code.value = "Error fetching code";
+//     code.value = "Code not Found";
 //   }
+
 // }
+
+async function logOut() {
+  hello('google').logout().then(function() {
+    alert('Signed out');
+  }, function(e) {
+    alert('Signed out error: ' + e.error.message);
+  });
+}
+
+async function fetchCode() {
+  window.hello.init({ google: GOOGLE_CLIENT_ID }, {
+    redirect_uri: `https://${EXTENSION_ID}.chromiumapp.org/`,
+    scope: 'email profile https://www.googleapis.com/auth/gmail.readonly'
+  });
+
+  let token = await getToken();
+
+  if (!token) {
+    // First-time login: show Google account picker
+    await hello('google').login({
+      scope: 'email profile https://www.googleapis.com/auth/gmail.readonly',
+      prompt: 'select_account'  // ✅ only this
+    });
+    token = await getToken(); // Now it should be there
+  }
+
+  if (!token) {
+    console.warn("Still no token after login.");
+    return;
+  }
+
+  const res = await fetch("https://codefill.onrender.com/get-code", {
+    headers: {
+      'token': JSON.stringify(token)
+    }
+  });
+
+  const data = await res.json();
+  code.value = data.Code ?? "No verification code found";
+  time.value = data.Time ?? " ";
+  from.value = data.From.split("<")[0].trim() ?? " ";
+  copyCode();
+}
 
 
 /** Fetch it later (undefined if never stored) */
@@ -158,17 +162,10 @@ async function getToken() {
 }
 
 
-// function logToBackground(msg) {
-//   chrome.runtime.sendMessage({ type: "log", payload: msg });
-// }
-
-
-
 onMounted(fetchCode());
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
 
 :global(html),
 :global(body),
@@ -214,6 +211,17 @@ onMounted(fetchCode());
   color: inherit;
   cursor: pointer;
   font-size: 1.2rem;
+}
+
+.icon-logoutbutton {
+  display: inline-flex;       
+  align-items: center;          
+  gap: 0.5rem;                  
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .content {
