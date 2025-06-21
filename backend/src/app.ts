@@ -41,17 +41,15 @@ app.get("/get-code", async (req, res) => {
     return;
   }
 
-  const tokenObj = JSON.parse(token); // No `.google` here if frontend already sends only google
+  const tokenObj = JSON.parse(token); 
 
   const authClient = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
   authClient.setCredentials(tokenObj); // Directly set access_token, etc.
 
   const emails = await getEmails(authClient);
-  console.log("Email extracted: ", emails)
   const codes = await getCode(emails);
-  console.log("Sending to frontend: ", codes[0])
 
-  res.json(codes[0]);
+  res.json(codes[0]); // Send latest email w/code 
 });
 
 

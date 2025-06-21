@@ -6,7 +6,6 @@
 
 import { Email, DayDate } from "./main";
 
-
 /**
  * This function uses regex matching to detect whether a given email contains a
  * valid verification code. It also performs checks on other aspects of the email,
@@ -15,8 +14,6 @@ import { Email, DayDate } from "./main";
 export async function getCode(emails: Email[]) {
   var all_codes = [];
   try {
-    // const auth = await authorize();
-    // const emails = await getEmails(auth);  //TODO: dont call this all the time
 
     for (const email of emails) {
       const regex = /\b[A-Z0-9]{5,15}\b/g;
@@ -41,7 +38,6 @@ export async function getCode(emails: Email[]) {
     console.error("Error in getEmails [format.ts]");
   }
 
-  // console.log(all_codes)
   return all_codes;
 }
 
@@ -93,6 +89,10 @@ function removeURL(email: Email, verif_codes: RegExpMatchArray) {
   return valid_codes;
 }
 
+/**
+ * Gets the time difference from current date and dateStr (in ms) and returns
+ * the difference in a readable format
+ */
 function getTimeDifference(dateStr: string): DayDate {
     const then = new Date(dateStr).getTime(); // parsed safely
     const now = Date.now();
@@ -108,18 +108,17 @@ function getTimeDifference(dateStr: string): DayDate {
     return { days, hours, minutes };
 }
 
+/**
+ * Formats given time difference into a readable format
+ */
 function formatDates(time: DayDate) : string {
     if (time.days >= 1) {
-        // console.log(`${time.days} day(s) ago`);
         return `${time.days} day(s) ago`
     } else if (time.hours >= 1) {
-        // console.log(`${time.hours} hour(s) ago`);
         return `${time.hours} hour(s) ago`
     } else if (time.minutes >= 1) {
-        // console.log(`${time.minutes} minute(s) ago`);
         return `${time.minutes} minute(s) ago`
     } else {
-        // console.log("now");
         return "now"
     }
 }

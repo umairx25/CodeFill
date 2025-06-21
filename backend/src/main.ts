@@ -5,6 +5,7 @@ import quotedPrintable from "quoted-printable";
 // OAuth scopes
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 
+//Email object containing Email information
 export interface Email {
   From: string;
   To: string;
@@ -29,7 +30,7 @@ export const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URIS!;
 // OAuth2 client
 const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
-// 🔐 Step 1: Generate auth URL
+// Generate auth URL
 export function getAuthUrl(): string {
   return oauth2Client.generateAuthUrl({
     access_type: "offline",
@@ -38,7 +39,7 @@ export function getAuthUrl(): string {
   });
 }
 
-// 🔁 Step 2: Exchange `code` for tokens
+// Exchange `code` for tokens
 export async function getClientFromCode(code: string): Promise<OAuth2Client> {
   const { tokens } = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);
