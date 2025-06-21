@@ -1,5 +1,4 @@
 import { google} from "googleapis";
-require('dotenv').config()
 import { OAuth2Client } from "google-auth-library";
 import quotedPrintable from "quoted-printable";
 
