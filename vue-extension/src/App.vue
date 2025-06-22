@@ -152,9 +152,16 @@ async function getToken() {
   const obj = await chrome.storage.local.get("hello");
 
   const googleToken = obj.hello?.google;
-  if (!googleToken || !googleToken.access_token) {
-    console.warn("Token not found or malformed:", googleToken);
+
+  if (!googleToken) {
+    console.warn("Token not found (first sign in)", googleToken);
     return null;
+  }
+  
+  else if (Date.now() / 1000 >= googleToken.expires){
+    await hello('google').login({ display: "none" }); 
+    console.warn("Token expired:", googleToken);
+    return await chrome.storage.local.get("hello").hello?.google;
   }
 
   console.log("Retrieved token:", googleToken);
