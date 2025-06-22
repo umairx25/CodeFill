@@ -64,6 +64,10 @@ async function logOut() {
   });
 }
 
+/**
+ * Based on the token retrieved from local storage, fetch appropriately formatted data
+ * from the backend. 
+ */
 async function fetchCode() {
   window.hello.init({ google: GOOGLE_CLIENT_ID }, {
     redirect_uri: `https://${EXTENSION_ID}.chromiumapp.org/`,
