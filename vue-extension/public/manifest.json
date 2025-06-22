@@ -1,6 +1,6 @@
 {
   "name": "CodeFill",
-  "description": "Base Level Extension",
+  "description": "CodeFill is a one-click Chrome extension that fetches and auto-copies verification codes (like OTPs, 2FA codes, login tokens) directly from your Gmail inbox.",
   "version": "1.0",
   "manifest_version": 3,
   "icons": {
