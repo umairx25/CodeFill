@@ -7,10 +7,6 @@
           <i class="fas fa-user-circle"></i>
           <span class="label">Logout</span>
         </button>
-
-        <!-- <button class="icon-button" title="Account">
-          <i class="fas fa-user-circle"></i>
-        </button> -->
       </div>
     </header>
 
@@ -41,68 +37,25 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
+const GOOGLE_CLIENT_ID = "628428485156-am6gqacvr5p1dm8nmhdioebdr2llid91.apps.googleusercontent.com"
+const EXTENSION_ID = chrome.runtime.id;
+const code = ref("Loading...");
+const time = ref(" ")
+const from = ref(" ")
 const copied = ref(false)
 
+/**
+ * Copies the code received from the user's inbox directly to their clipboard 
+ */
 function copyCode() {
-  navigator.clipboard.writeText(code.value);   // ← use .value
+  navigator.clipboard.writeText(code.value);   
   copied.value = true;
   setTimeout(() => (copied.value = false), 1500);
 }
 
-
-const code = ref("Loading...");
-const time = ref(" ")
-const from = ref(" ")
-const loading = ref(false);
-const error = ref(null);
-
-// Replace this with your real OAuth Client ID
-const GOOGLE_CLIENT_ID = "628428485156-am6gqacvr5p1dm8nmhdioebdr2llid91.apps.googleusercontent.com"
-const EXTENSION_ID = chrome.runtime.id;
-// console.warn(EXTENSION_ID)
-
-// async function fetchCode(){
-
-//   window.hello.init({
-//     google: GOOGLE_CLIENT_ID
-//   }, {
-//     redirect_uri: `https://${EXTENSION_ID}.chromiumapp.org/`,
-//     scope: 'email profile https://www.googleapis.com/auth/gmail.readonly'
-//   });
-
-//   // if(!getToken()){
-//     window.hello('google').login({
-//     scope: 'email',
-//     prompt: 'select_account'  // 👈 forces account picker
-//   });
-
-//   // }
-  
-//   try {
-//     var token = await getToken()
-//     console.warn("Token found: ", JSON.stringify(token))
-
-//     const res = await fetch("http://localhost:3001/get-code", {
-//       headers: {
-//         'token': JSON.stringify(token)
-//       }
-//     });
-
-//     const data = await res.json();
-//     console.warn("After fetch call, found: ", data)
-//     code.value = String(data)
-//     // setToken(data.Token)
-//     code.value = data.Code ?? "No verification code found";
-//     time.value = data.Time ?? " ";
-//     from.value = data.From.split("<")[0].trim() ?? " ";
-//     copyCode();
-//   } catch (err) {
-//     console.error("Error fetching:", err);
-//     code.value = "Code not Found";
-//   }
-
-// }
-
+/**
+ * Logs user out of current session
+ */
 async function logOut() {
   hello('google').logout().then(function() {
     alert('Signed out');
@@ -123,9 +76,9 @@ async function fetchCode() {
     // First-time login: show Google account picker
     await hello('google').login({
       scope: 'email profile https://www.googleapis.com/auth/gmail.readonly',
-      prompt: 'select_account'  // ✅ only this
+      prompt: 'select_account'  // allow user to choose a specific account
     });
-    token = await getToken(); // Now it should be there
+    token = await getToken();
   }
 
   if (!token) {
@@ -147,7 +100,10 @@ async function fetchCode() {
 }
 
 
-/** Fetch it later (undefined if never stored) */
+/**
+ * Retrieves token from chrome local storage. Returns null if not found, and creates a
+ * new token and returns if expired. Returns the existing token otherwise.
+ */
 async function getToken() {
   const obj = await chrome.storage.local.get("hello");
 
@@ -158,6 +114,7 @@ async function getToken() {
     return null;
   }
   
+  // Verification code has expired
   else if (Date.now() / 1000 >= googleToken.expires){
     await hello('google').login({ display: "none" }); 
     console.warn("Token expired:", googleToken);
