@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Privacy Policy - CodeFill</title>
@@ -15,21 +16,25 @@
       color: #333;
     }
 
-    h1, h2 {
+    h1,
+    h2 {
       color: #222;
     }
   </style>
 </head>
+
 <body>
   <h1>Privacy Policy</h1>
-  <p><strong>Last updated:</strong> June 22, 2025</p>
+  <p><strong>Last updated:</strong> June 30, 2025</p>
 
-  <p><strong>CodeFill</strong> is a Chrome Extension that helps users quickly extract verification codes from their Gmail inbox and copy them to their clipboard for easy use during sign-in processes.</p>
+  <p><strong>CodeFill</strong> is a Chrome Extension that helps users quickly extract verification codes from their
+    Gmail inbox and copy them to their clipboard for easy use during sign-in processes.</p>
 
   <h2>What Information We Access</h2>
   <p>CodeFill requests the following data:</p>
   <ul>
-    <li>Access to your Gmail inbox (read-only) via the <code>https://www.googleapis.com/auth/gmail.readonly</code> scope.</li>
+    <li>Access to your Gmail inbox (read-only) via the <code>https://www.googleapis.com/auth/gmail.readonly</code>
+      scope.</li>
     <li>Your basic Google profile (email and name) for login verification.</li>
     <li>Clipboard access to automatically copy your verification code.</li>
   </ul>
@@ -42,26 +47,48 @@
     <li>To maintain login session information locally in your browser.</li>
   </ul>
 
+  <h2> Data Protection and Security</h2>
+  <p>
+
+
+    We take precautions to protect your Google account data. Our app communicates with the backend securely
+    via HTTPS to prevent interception during transit. However, we do not store your Google data (such as access tokens
+    or email data) on our servers. <br> <br>
+
+    All authentication and token handling is managed on your device using using OAuth2. Your access and refresh tokens are
+    stored locally in your browser’s storage (e.g., Chrome Local Storage). This means: <br> <br>
+    • Your sensitive tokens remain on your device only and are not transmitted to any third-party servers. <br>
+    • We do not persist or log any Google user data on our backend. <br>
+    • We rely on the browser’s built-in security to protect stored data, and we do not access it unless explicitly
+    triggered by your actions. 
+  </p>
+
   <h2>Data Storage and Retention</h2>
   <p>
-    CodeFill stores your Google access token temporarily in your browser's local storage (<code>chrome.storage.local</code>), used only to fetch verification codes. No data is stored externally or on our servers, and your inbox contents are never saved, logged, or shared.
+    CodeFill stores your Google access token temporarily in your browser's local storage
+    (<code>chrome.storage.local</code>), used only to fetch verification codes. No data is stored externally or on our
+    servers, and your inbox contents are never saved, logged, or shared.
   </p>
 
   <h2>Third-Party Services</h2>
-  <p>We use Google APIs to access Gmail content with your permission. Authentication is handled through <strong>OAuth2</strong> and the Chrome Identity API.</p>
+  <p>We use Google APIs to access Gmail content with your permission. Authentication is handled through
+    <strong>OAuth2</strong> and the Chrome Identity API.</p>
 
   <h2>Your Consent</h2>
-  <p>By installing and using CodeFill, you consent to the access and usage of your Gmail account data as described in this policy.</p>
+  <p>By installing and using CodeFill, you consent to the access and usage of your Gmail account data as described in
+    this policy.</p>
 
   <h2>Data Sharing</h2>
   <p>We do not share or sell your data to any third parties. All processing occurs on-device.</p>
 
   <h2>Contact</h2>
-  <p>If you have questions or concerns about this privacy policy, please contact us at <a href="mailto:support@codefill.app">codefill@uarham.me</a>.</p>
+  <p>If you have questions or concerns about this privacy policy, please contact us at <a
+      href="mailto:support@codefill.app">codefill@uarham.me</a>.</p>
 
   <h2>Changes to This Policy</h2>
   <p>
     This policy may be updated periodically. We recommend checking this page occasionally to stay informed.
   </p>
 </body>
+
 </html>
