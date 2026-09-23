@@ -37,7 +37,7 @@
 
 - Please check [privacy.md](privacy.md) for privacy details.
 - To reproduce locally, navigate to [extensions](chrome://extensions/) -> turn on developer mode -> click on `Load unpacked` -> select the `extension` directory.
-- Contributions are welcome, especially related to improving the code extraction logic. Feel free to make a PR!
+- Contributions are welcome, especially the code extraction logic. Feel free to make a pull request!
 - Feel free to reach out on [contact@uarham.me](mailto:contact@uarham.me) or open an issue for any questions or concerns.
 
 ---
