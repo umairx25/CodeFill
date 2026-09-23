@@ -31,3 +31,14 @@ p { margin: 0; color: #a3b2ac; font-size: 13px; line-height: 1.45; }
 :focus-visible { outline: 3px solid #8ee0b8; outline-offset: 3px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } .copied, .copy-button, .icon-button { transition: none; } }
+
+[hidden] { display: none !important; }
+.copy-button:disabled { opacity: .5; cursor: wait; }
+.privacy { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 14px 8px 20px; }
+.settings-wrap { position: relative; }
+.settings-panel { position: absolute; z-index: 2; right: 0; bottom: 40px; width: 248px; margin: 0; padding: 14px; border: 1px solid #35433c; border-radius: 12px; background: #1d2521; box-shadow: 0 12px 30px #0008; text-align: left; }
+.settings-panel legend { float: left; width: 100%; margin-bottom: 10px; color: #edf2f0; font-size: 12px; font-weight: 600; }
+.settings-panel label { display: flex; align-items: center; gap: 9px; clear: both; min-height: 36px; color: #edf2f0; font-size: 13px; cursor: pointer; }
+.settings-panel input { accent-color: #8ee0b8; }
+.settings-panel p { margin-top: 8px; font-size: 11px; }
+.settings-panel p:empty { display: none; }

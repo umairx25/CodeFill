@@ -8,14 +8,29 @@
     "48": "assets/icon.png",
     "128": "assets/icon.png"
   },
-  "permissions": ["clipboardWrite"],
-  "host_permissions": ["https://mail.google.com/*"],
-  "content_scripts": [{
-    "matches": ["https://mail.google.com/*"],
-    "js": ["content.js"],
-    "run_at": "document_idle"
-  }],
-  "action": { "default_popup": "popup.html" },
+  "permissions": [
+    "clipboardWrite",
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   }
