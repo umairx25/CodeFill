@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CodeFill</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main>
+    <header>
+      <div class="brand" style="display:inline-flex; align-items:center; gap:0.5rem; line-height:1;"><img src="assets/icon.ico" alt="CodeFill app icon, a rounded blue square with a white terminal cursor and subtle coding-inspired accents, presented on a light background and used as the extension branding" style="width:20px; height:auto; display:block;">CodeFill</div><button id="scan"
+        class="icon-button" type="button" aria-label="Scan again" title="Scan again"><svg viewBox="0 0 24 24"
+          aria-hidden="true">
+          <path d="M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7" />
+        </svg></button>
+    </header>
+    <section id="loading" class="state" aria-live="polite"><span class="spinner" aria-hidden="true"></span>
+      <div>
+        <h1>Looking for a code</h1>
+        <p id="status">Checking emails…</p>
+      </div>
+    </section>
+    <section id="result" class="state result" hidden>
+      <p class="label">Verification code</p>
+      <div class="code-row">
+        <span id="code" class="code"></span>
+        <button id="copy" class="copy-button" type="button" aria-label="Copy verification code" title="Copy verification code">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="8" y="8" width="12" height="12" rx="2" />
+            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+          </svg>
+          <span>Copy</span>
+        </button>
+      </div>
+      <p class="sender"><strong>From:</strong> <span id="sender"></span></p>
+      <p id="copied" class="copied" role="status">Copied to clipboard</p>
+    </section>
+    <section id="empty" class="state" hidden>
+      <div>
+        <h1 id="empty-title">No code found</h1>
+        <p id="empty-message">No likely verification code appeared in your latest emails.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="privacy">© 2026 CodeFill · <a href="https://github.com/umairx25/codefill/privacy.md" target="_blank" rel="noopener noreferrer">Privacy policy</a></footer>
+  <script type="module" src="popup.js"></script>
+</body>
+
+</html>

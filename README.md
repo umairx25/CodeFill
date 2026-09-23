@@ -1,20 +1,13 @@
 
 # CodeFill
 
-**CodeFill** is a one-click Chrome extension that fetches and auto-copies verification codes (like OTPs, 2FA codes, login tokens) directly from your **Gmail inbox**. No tab switching, no email hunting — just click, copy, done.
+**CodeFill** is a one-click Chrome extension that fetches and auto-copies verification codes (like **OTPs** or **2FA** codes) directly from your **Gmail inbox**. Simply click on the extension, and your code is **automatically** copied to your clipboard. ``Coming soon to the Chrome Web Store!``
 
-⏱️ **Saves ~6–7 seconds per login** by eliminating inbox digging  
-🔒 **Runs only on click** — no background scanning or polling  
-🧩 Built with **Vue 3** (popup UI) and **Node.js/Express** backend (Gmail OAuth + email parsing)
-
----
-
-## 📦 [→ Chrome Web Store (mock)](https://chrome.google.com/webstore/detail/codefill/your-extension-id-here)
-
----
+- ⏱️ **Saves ~6–7 seconds per login** by eliminating inbox digging  
+- 🔒 **Runs only on click**, no background scanning or polling  
 
 
-## ⚙️ How It Works
+<!-- ## 🧠 Tech Stack
 
 1. Click the CodeFill icon in your browser toolbar  
 2. On first use, you'll be prompted to sign in with your Gmail account (OAuth 2.0)  
@@ -23,78 +16,33 @@
    - Parse email subjects + HTML bodies using pattern-matched code extractors (regex-based, customizable)
    - Display the most recent code in a popup
    - Auto-copy the code to your clipboard
-   - Update the button text to “Copied!” (then back)
+   - Update the button text to “Copied!” (then back) -->
 
----
+<!-- --- -->
 
-## 🧠 Tech Stack
+## How it works
+
+
 
 | Component      | Tech Used                          |
 |----------------|------------------------------------|
-| Frontend       | `Vue 3 + Vite` (popup UI)  
-| Backend        | `Express.js` w/ OAuth 2.0 flow  
-| Email API      | `Google Gmail API` (`messages.list`, `messages.get`)  
-| Auth Flow      | Secure OAuth redirect w/ refresh token handling  
+| Frontend       | `HTML + CSS + JSS` is used to build the popup UI
+| Gmail Access   | `https://mail.google.com/mail/u/0/feed/atom` to fetch email contents (must be signed in to Gmail on your browser)
+| Code Extraction| Combination of `regex` and using neighbouring words to reduce false positives
 | Clipboard      | Native `navigator.clipboard.writeText()`  
-| Storage        | `chrome.storage.local` for token caching  
+
+<!-- --- -->
+
+## Important Notes
+
+- Please check [privacy.md](privacy.md) for privacy details.
+- To reproduce locally, navigate to [extensions](chrome://extensions/) -> turn on developer mode -> click on `Load unpacked` -> select the `extension` directory.
+- Contributions are welcome, especially related to improving the code extraction logic. Feel free to make a PR!
+- Feel free to reach out on [contact@uarham.me](mailto:contact@uarham.me) or open an issue for any questions or concerns.
 
 ---
 
-## 🔐 Privacy & Security
+## What's next
 
-CodeFill is designed with privacy-first architecture:
-
-- ✅ No background listeners — **runs only when clicked**
-- ✅ No third-party libraries for tracking or analytics
-- ✅ All email parsing happens **on the backend**, token-scoped per user
-- ✅ You can revoke access anytime at [Google Account Permissions](https://myaccount.google.com/permissions)
-
----
-
-## ❗ Troubleshooting
-
-If you experience issues (e.g., code not showing or login failing):
-
-1. Visit [Google Account Permissions](https://myaccount.google.com/permissions)
-2. Revoke access for **CodeFill**
-3. Click the extension icon again to reauthorize your Gmail account
-
----
-
-## 🚧 Coming Soon
-
-- 📨 **Outlook inbox support** (via Microsoft Graph API)  
-- 👥 **Support for multiple email accounts**  
-
----
-
-
-## 🧪 Development Setup
-
-```bash
-# Clone the repo
-git clone https://github.com/yourusername/codefill.git
-
-# Install dependencies
-cd vue-extension
-npm install
-
-# Run dev server for extension
-npm run dev
-
-# Test out on your browser (any Chromium browser is supported)
-npm run build # to build the extension
-
-#Go to chrome://extensions -> load unpacked -> vue-extension/dist
-
-# Running the Backend (optional, if running locally)
-cd backend/src
-npm install
-npx ts-node app.ts
-```
-
----
-
-## 💬 Feedback or Questions?
-
-Open an issue or message me on [LinkedIn](https://linkedin.com/in/yourname) — happy to help.
+- Publish to the Chrome Web Store
+- **Outlook inbox support** (via Microsoft Graph API)  

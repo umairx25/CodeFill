@@ -1,0 +1,33 @@
+:root { color-scheme: dark; font-family: "Avenir Next", Avenir, ui-sans-serif, system-ui, sans-serif; color: #edf2f0; background: #131716; }
+* { box-sizing: border-box; }
+body { width: 356px; min-height: 250px; margin: 0; background: #131716; }
+main { min-height: 218px; padding: 20px; }
+header { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 650; }
+.mark { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 7px; color: #fff; background: #b4eed3; font: 700 13px Georgia, serif; }
+.icon-button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 10px; color: #a3b2ac; background: transparent; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.icon-button:hover { background: #252e2a; color: #b4eed3; }
+.icon-button:disabled { opacity: .4; cursor: wait; }
+.icon-button svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.state { min-height: 152px; display: flex; align-items: center; gap: 15px; padding-top: 24px; }
+.state[hidden] { display: none; }
+h1 { margin: 0 0 5px; font-size: 18px; line-height: 1.25; font-weight: 620; letter-spacing: -.2px; }
+p { margin: 0; color: #a3b2ac; font-size: 13px; line-height: 1.45; }
+.spinner { width: 19px; height: 19px; flex: none; border: 2px solid #35433c; border-top-color: #8ee0b8; border-radius: 50%; animation: spin .85s linear infinite; }
+.result { display: block; padding-top: 29px; }
+.label { color: #a3b2ac; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
+.code-row { display: flex; align-items: center; gap: 12px; margin: 7px 0 8px; }
+.code { min-width: 0; color: #f4f8f6; font: 500 38px/1.15 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 2px; overflow-wrap: anywhere; }
+.copy-button { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 5px; min-height: 36px; padding: 7px 9px; border: 1px solid #35433c; border-radius: 8px; color: #b4eed3; background: #23372c; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.copy-button:hover { background: #2e4939; }
+.copy-button:active { background: #395a46; }
+.copy-button svg { width: 16px; height: 16px; }
+.sender strong { color: #d5dfda; }
+.sender { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.copied { margin-top: 16px; color: #8ee0b8; font-weight: 600; text-align: center; opacity: 1; transition: opacity .25s ease; }
+.copied.fade { opacity: 0; }
+.privacy { padding: 11px 20px 13px; border-top: 1px solid #2a332e; color: #a3b2ac; font-size: 10px; text-align: center; }
+.privacy a { color: #8ee0b8; text-underline-offset: 2px; }
+:focus-visible { outline: 3px solid #8ee0b8; outline-offset: 3px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } .copied, .copy-button, .icon-button { transition: none; } }
